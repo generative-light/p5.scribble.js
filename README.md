@@ -1,6 +1,8 @@
 # scripple-p5.js
 Draw 2D primitives in a sketchy look in http://p5js.org/.
 
+![Example image](https://github.com/generative-light/scripple-p5.js/blob/master/scribble-p5.js.png)
+
 With scribble-p5.js you can draw
 - lines
 - curves
