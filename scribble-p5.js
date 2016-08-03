@@ -12,12 +12,11 @@ The handy library is licensed under the GNU Lesser General Public License: http:
 */
 
 function Scribble() {
-  this.bowing = 0.1;
+  this.bowing = 1;
   this.roughness = 1;
   this.maxOffset = 2;
   this.numEllipseSteps = 9;
   this.ellipseInc = (Math.PI*2)/this.numEllipseSteps;
-  this.roughness = 1;
 
   this.getOffset = function( minVal, maxVal ) {
     return this.roughness*(random()*(maxVal-minVal)+minVal);
