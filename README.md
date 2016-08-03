@@ -14,7 +14,8 @@ With scribble-p5.js you can draw
 in a sketchy look
 
 # Credits
-Much of the source code is taken from the handy library for processing,
+This is a port of the handy library for processing to p5.js,
+so much of the source code is taken from the handy library for processing,
 written by Jo Wood, giCentre, City University London based on an idea by Nikolaus Gradwohl.
 https://github.com/gicentre/handy
 
