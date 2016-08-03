@@ -1,13 +1,12 @@
 /*
 This file contains functions for drawing 2d primitives with a handy sketchy look in p5.js.
 
-Author: Janneck Wullschleger in 06/2016
+Author: Janneck Wullschleger in 07/2016
 Web: http://itsjw.de
 Mail: jw@itsjw.de
 
 Much of the source code is taken from the handy library for processing,
 written by Jo Wood, giCentre, City University London based on an idea by Nikolaus Gradwohl.
-
 The handy library is licensed under the GNU Lesser General Public License: http://www.gnu.org/licenses/.
 */
 
@@ -46,7 +45,6 @@ function Scribble() {
   }
 
   this.getIntersectingLines = function( lineCoords, xCoords, yCoords ) {
-
     var intersections = [];
     var s1 = new Segment( lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3] );
 
@@ -60,164 +58,143 @@ function Scribble() {
     return intersections;
   }
 
-}
+  this.scribbleLine = function( x1, y1, x2, y2 ) {
+    var lenSq = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
+    var offset = this.maxOffset;
 
-var scribble = new Scribble();
+    if ( this.maxOffset*this.maxOffset*100 > lenSq ) {
+      offset = Math.sqrt( lenSq )/10;
+    }
 
-// draws a handy line
-function scribbleLine( x1, y1, x2, y2, maxOffset ) {
-  var lenSq = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
-  if (maxOffset == undefined) {
-    var offset = scribble.maxOffset;
-  } else {
-    var offset = maxOffset;
+    var halfOffset = offset/2;
+    var divergePoint = 0.2 + random()*0.2;
+    var midDispX = this.bowing*this.maxOffset*(y2-y1)/200;
+    var midDispY = this.bowing*this.maxOffset*(x1-x2)/200;
+    midDispX = this.getOffset( -midDispX, midDispX );
+    midDispY = this.getOffset( -midDispY, midDispY );
+
+    noFill();
+
+    beginShape();
+    vertex(     x1 + this.getOffset( -offset, offset ), y1 + this.getOffset( -offset, offset ) );
+    curveVertex(x1 + this.getOffset( -offset, offset ), y1 + this.getOffset( -offset, offset ) );
+    curveVertex(midDispX+x1+(x2 -x1)*divergePoint + this.getOffset( -offset, offset ), midDispY+y1 + (y2-y1)*divergePoint + this.getOffset( -offset, offset ) );
+    curveVertex(midDispX+x1+2*(x2-x1)*divergePoint + this.getOffset( -offset, offset ), midDispY+y1+ 2*(y2-y1)*divergePoint + this.getOffset( -offset,offset ) );
+    curveVertex(x2 + this.getOffset( -offset, offset ), y2 + this.getOffset( -offset, offset ) );
+    vertex(     x2 + this.getOffset( -offset, offset ), y2 + this.getOffset( -offset, offset ) );
+    endShape();
+
+    beginShape();
+    vertex(     x1 + this.getOffset( -halfOffset, halfOffset ), y1 + this.getOffset( -halfOffset, halfOffset ) );
+    curveVertex(x1 + this.getOffset( -halfOffset, halfOffset ), y1 + this.getOffset( -halfOffset, halfOffset ) );
+    curveVertex(midDispX+x1+(x2 -x1)*divergePoint + this.getOffset( -halfOffset, halfOffset ), midDispY+y1 + (y2-y1)*divergePoint + this.getOffset( -halfOffset, halfOffset ) );
+    curveVertex(midDispX+x1+2*(x2-x1)*divergePoint + this.getOffset( -halfOffset, halfOffset ), midDispY+y1+ 2*(y2-y1)*divergePoint + this.getOffset( -halfOffset, halfOffset ) );
+    curveVertex(x2 + this.getOffset( -halfOffset, halfOffset ), y2 + this.getOffset( -halfOffset, halfOffset ) );
+    vertex(     x2 + this.getOffset( -halfOffset, halfOffset ), y2 + this.getOffset( -halfOffset, halfOffset ) );
+    endShape();
   }
 
-  if ( scribble.maxOffset*scribble.maxOffset*100 > lenSq ) {
-    offset = Math.sqrt( lenSq )/10;
+  this.scribbleCurve = function( x1, y1, x2, y2, x3, y3, x4, y4 ) {
+    bezier(  x1+this.getOffset( -2, 2 ), y1+this.getOffset( -2, 2 ),
+             x3+this.getOffset( -4, 4 ), y3+this.getOffset( -3, 3 ),
+             x4+this.getOffset( -3, 3 ), y4+this.getOffset( -3, 3 ),
+             x2+this.getOffset( -1, 1 ), y2+this.getOffset( -1, 1 ) );
+
+    bezier(  x1+this.getOffset( -2, 2 ), y1+this.getOffset( -2, 2 ),
+             x3+this.getOffset( -3, 3 ), y3+this.getOffset( -3, 3 ),
+             x4+this.getOffset( -3, 3 ), y4+this.getOffset( -4, 4 ),
+             x2+this.getOffset( -2, 2 ), y2+this.getOffset( -2, 2 ) );
   }
 
-  var halfOffset = offset/2;
-  var divergePoint = 0.2 + random()*0.2;
-  var midDispX = scribble.bowing*scribble.maxOffset*(y2-y1)/200;
-  var midDispY = scribble.bowing*scribble.maxOffset*(x1-x2)/200;
-  midDispX = scribble.getOffset( -midDispX, midDispX );
-  midDispY = scribble.getOffset( -midDispY, midDispY );
+  this.scribbleRect = function( x, y, w, h ) {
+    var halfWidth = w/2;
+    var halfHeight = h/2;
+    var left   = Math.min( x-halfWidth, x+halfWidth );
+    var right  = Math.max( x-halfWidth, x+halfWidth );
+    var top    = Math.min( y-halfHeight, y+halfHeight );
+    var bottom = Math.max( y-halfHeight, y+halfHeight );
 
-  noFill();
-
-  beginShape();
-  vertex(     x1 + scribble.getOffset( -offset, offset ), y1 + scribble.getOffset( -offset, offset ) );
-  curveVertex(x1 + scribble.getOffset( -offset, offset ), y1 + scribble.getOffset( -offset, offset ) );
-  curveVertex(midDispX+x1+(x2 -x1)*divergePoint + scribble.getOffset( -offset, offset ), midDispY+y1 + (y2-y1)*divergePoint + scribble.getOffset( -offset, offset ) );
-  curveVertex(midDispX+x1+2*(x2-x1)*divergePoint + scribble.getOffset( -offset, offset ), midDispY+y1+ 2*(y2-y1)*divergePoint + scribble.getOffset( -offset,offset ) );
-  curveVertex(x2 + scribble.getOffset( -offset, offset ), y2 + scribble.getOffset( -offset, offset ) );
-  vertex(     x2 + scribble.getOffset( -offset, offset ), y2 + scribble.getOffset( -offset, offset ) );
-  endShape();
-
-  beginShape();
-  vertex(     x1 + scribble.getOffset( -halfOffset, halfOffset ), y1 + scribble.getOffset( -halfOffset, halfOffset ) );
-  curveVertex(x1 + scribble.getOffset( -halfOffset, halfOffset ), y1 + scribble.getOffset( -halfOffset, halfOffset ) );
-  curveVertex(midDispX+x1+(x2 -x1)*divergePoint + scribble.getOffset( -halfOffset, halfOffset ), midDispY+y1 + (y2-y1)*divergePoint + scribble.getOffset( -halfOffset, halfOffset ) );
-  curveVertex(midDispX+x1+2*(x2-x1)*divergePoint + scribble.getOffset( -halfOffset, halfOffset ), midDispY+y1+ 2*(y2-y1)*divergePoint + scribble.getOffset( -halfOffset, halfOffset ) );
-  curveVertex(x2 + scribble.getOffset( -halfOffset, halfOffset ), y2 + scribble.getOffset( -halfOffset, halfOffset ) );
-  vertex(     x2 + scribble.getOffset( -halfOffset, halfOffset ), y2 + scribble.getOffset( -halfOffset, halfOffset ) );
-  endShape();
-
-}
-
-// draws a handy bezier curve
-function scribbleCurve ( x1, y1, x2, y2, x3, y3, x4, y4 ) {
-  bezier(  x1+scribble.getOffset( -2, 2 ), y1+scribble.getOffset( -2, 2 ),
-           x3+scribble.getOffset( -4, 4 ), y3+scribble.getOffset( -3, 3 ),
-           x4+scribble.getOffset( -3, 3 ), y4+scribble.getOffset( -3, 3 ),
-           x2+scribble.getOffset( -1, 1 ), y2+scribble.getOffset( -1, 1 ) );
-
-  bezier(  x1+scribble.getOffset( -2, 2 ), y1+scribble.getOffset( -2, 2 ),
-           x3+scribble.getOffset( -3, 3 ), y3+scribble.getOffset( -3, 3 ),
-           x4+scribble.getOffset( -3, 3 ), y4+scribble.getOffset( -4, 4 ),
-           x2+scribble.getOffset( -2, 2 ), y2+scribble.getOffset( -2, 2 ) );
-}
-
-// draws a handy rect
-function scribbleRect( x, y, w, h, maxOffset ) {
-
-  var halfWidth = w/2;
-  var halfHeight = h/2;
-  var left   = Math.min( x-halfWidth, x+halfWidth );
-  var right  = Math.max( x-halfWidth, x+halfWidth );
-  var top    = Math.min( y-halfHeight, y+halfHeight );
-  var bottom = Math.max( y-halfHeight, y+halfHeight );
-
-  if ( maxOffset == undefined) {
-    scribbleLine( left, top, right, top );
-    scribbleLine( right, top, right, bottom );
-    scribbleLine( right, bottom, left, bottom );
-    scribbleLine( left, bottom, left, top );
-  } else {
-    scribbleLine( left, top, right, top, maxOffset );
-    scribbleLine( right, top, right, bottom, maxOffset );
-    scribbleLine( right, bottom, left, bottom, maxOffset );
-    scribbleLine( left, bottom, left, top, maxOffset );
-  }
-}
-
-// draws a handy rect with rounded corners
-function scribbleRoundedRect( x, y, w, h, radius ) {
-  var halfWidth = w/2;
-  var halfHeight = h/2;
-
-  if ( radius == 0 || radius > halfWidth || radius > halfHeight ) {
-    scribbleRect( x, y, w, h );
-    return;
+      this.scribbleLine( left, top, right, top );
+      this.scribbleLine( right, top, right, bottom );
+      this.scribbleLine( right, bottom, left, bottom );
+      this.scribbleLine( left, bottom, left, top );
   }
 
-  var left   = Math.min( x-halfWidth, x+halfWidth );
-  var right  = Math.max( x-halfWidth, x+halfWidth );
-  var top    = Math.min( y-halfHeight, y+halfHeight );
-  var bottom = Math.max( y-halfHeight, y+halfHeight );
+  this.scribbleRoundedRect = function( x, y, w, h, radius ) {
+    var halfWidth = w/2;
+    var halfHeight = h/2;
 
-  scribbleLine( left+radius, top, right-radius, top, 1.5 );
-  scribbleLine( right, top+radius, right, bottom-radius, 1.5 );
-  scribbleLine( right-radius, bottom, left+radius, bottom, 1.5 );
-  scribbleLine( left, bottom-radius, left, top+radius, 1.5 );
-
-  scribbleCurve( left+radius, top, left, top+radius, left+radius*0.1, top+radius*0.1, left+radius*0.1, top+radius*0.1 );
-  scribbleCurve( right-radius, top, right, top+radius, right-radius*0.1, top+radius*0.1, right-radius*0.1, top+radius*0.1 );
-  scribbleCurve( left+radius, bottom, left, bottom-radius, left+radius*0.1, bottom-radius*0.1, left+radius*0.1, bottom-radius*0.1 );
-  scribbleCurve( right-radius, bottom, right, bottom-radius, right-radius*0.1, bottom-radius*0.1, right-radius*0.1, bottom-radius*0.1 );
-}
-
-// draws a handy ellipse
-function scribbleEllipse( x, y, w, h ) {
-  var rx = Math.abs(w/2);
-  var ry = Math.abs(h/2);
-
-  rx += scribble.getOffset( -rx*0.05, rx*0.05 );
-  ry += scribble.getOffset( -ry*0.05, ry*0.05 );
-
-  scribble.buildEllipse( x, y, rx, ry, 1, scribble.ellipseInc*scribble.getOffset( 0.1, scribble.getOffset( 0.4, 1 ) ) );
-  scribble.buildEllipse( x, y, rx, ry, 1.5, 0 );
-}
-
-// fills a polygon with handy hachure
-function scribbleFilling( xCoords, yCoords, gap, angle ) {
-  if ((xCoords == null) || (yCoords == null) || (xCoords.length == 0) || (yCoords.length == 0)) {
+    if ( radius == 0 || radius > halfWidth || radius > halfHeight ) {
+      this.scribbleRect( x, y, w, h );
       return;
     }
 
-  var hachureAngle = radians( angle%180 );
-  var cosAngle = Math.cos( hachureAngle );
-  var sinAngle = Math.sin( hachureAngle );
-  var tanAngle = Math.tan( hachureAngle );
+    var left   = Math.min( x-halfWidth, x+halfWidth );
+    var right  = Math.max( x-halfWidth, x+halfWidth );
+    var top    = Math.min( y-halfHeight, y+halfHeight );
+    var bottom = Math.max( y-halfHeight, y+halfHeight );
 
-  var left   = xCoords[0];
-  var right  = xCoords[0];
-  var top    = yCoords[0];
-  var bottom = yCoords[0];
+    this.scribbleLine( left+radius, top, right-radius, top, 1.5 );
+    this.scribbleLine( right, top+radius, right, bottom-radius, 1.5 );
+    this.scribbleLine( right-radius, bottom, left+radius, bottom, 1.5 );
+    this.scribbleLine( left, bottom-radius, left, top+radius, 1.5 );
 
-  for ( var i = 1; i < xCoords.length; i++ ) {
-    left   = Math.min( left, xCoords[i] );
-    right  = Math.max( right, xCoords[i] );
-    top    = Math.min( top, yCoords[i] );
-    bottom = Math.max( bottom, yCoords[i] );
+    this.scribbleCurve( left+radius, top, left, top+radius, left+radius*0.1, top+radius*0.1, left+radius*0.1, top+radius*0.1 );
+    this.scribbleCurve( right-radius, top, right, top+radius, right-radius*0.1, top+radius*0.1, right-radius*0.1, top+radius*0.1 );
+    this.scribbleCurve( left+radius, bottom, left, bottom-radius, left+radius*0.1, bottom-radius*0.1, left+radius*0.1, bottom-radius*0.1 );
+    this.scribbleCurve( right-radius, bottom, right, bottom-radius, right-radius*0.1, bottom-radius*0.1, right-radius*0.1, bottom-radius*0.1 );
   }
 
-  var it = new HachureIterator( top-1, bottom+1, left-1, right+1, gap, sinAngle, cosAngle, tanAngle );
-  var rectCoords = null;
+  this.scribbleEllipse = function( x, y, w, h ) {
+    var rx = Math.abs(w/2);
+    var ry = Math.abs(h/2);
 
-  while ( (rectCoords = it.getNextLine()) != null ) {
-    var lines = scribble.getIntersectingLines( rectCoords, xCoords, yCoords );
+    rx += this.getOffset( -rx*0.05, rx*0.05 );
+    ry += this.getOffset( -ry*0.05, ry*0.05 );
 
-    for ( var i = 0; i < lines.length; i+=2 ) {
-      if ( i < lines.length-1 ) {
-        var p1 = lines[i];
-        var p2 = lines[i+1];
-        scribbleLine( p1[0], p1[1], p2[0], p2[1], 2 );
+    this.buildEllipse( x, y, rx, ry, 1, this.ellipseInc*this.getOffset( 0.1, this.getOffset( 0.4, 1 ) ) );
+    this.buildEllipse( x, y, rx, ry, 1.5, 0 );
+  }
+
+  this.scribbleFilling = function( xCoords, yCoords, gap, angle ) {
+    if ((xCoords == null) || (yCoords == null) || (xCoords.length == 0) || (yCoords.length == 0)) {
+        return;
+      }
+
+    var hachureAngle = radians( angle%180 );
+    var cosAngle = Math.cos( hachureAngle );
+    var sinAngle = Math.sin( hachureAngle );
+    var tanAngle = Math.tan( hachureAngle );
+
+    var left   = xCoords[0];
+    var right  = xCoords[0];
+    var top    = yCoords[0];
+    var bottom = yCoords[0];
+
+    for ( var i = 1; i < xCoords.length; i++ ) {
+      left   = Math.min( left, xCoords[i] );
+      right  = Math.max( right, xCoords[i] );
+      top    = Math.min( top, yCoords[i] );
+      bottom = Math.max( bottom, yCoords[i] );
+    }
+
+    var it = new HachureIterator( top-1, bottom+1, left-1, right+1, gap, sinAngle, cosAngle, tanAngle );
+    var rectCoords = null;
+
+    while ( (rectCoords = it.getNextLine()) != null ) {
+      var lines = this.getIntersectingLines( rectCoords, xCoords, yCoords );
+
+      for ( var i = 0; i < lines.length; i+=2 ) {
+        if ( i < lines.length-1 ) {
+          var p1 = lines[i];
+          var p2 = lines[i+1];
+          this.scribbleLine( p1[0], p1[1], p2[0], p2[1], 2 );
+        }
       }
     }
   }
 }
+
 
 
 function HachureIterator( _top, _bottom, _left, _right, _gap, _sinAngle, _cosAngle, _tanAngle ) {
