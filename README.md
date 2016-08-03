@@ -1,4 +1,4 @@
-# scribble-p5.js
+# p5.scribble.js
 Draw 2D primitives in a sketchy look in http://p5js.org/.
 
 ![Example image](https://github.com/generative-light/scripple-p5.js/blob/master/scribble-p5.js.png)
@@ -22,7 +22,7 @@ https://github.com/gicentre/handy
 # How to use
 ## Include the file
 
-    <script language="javascript" type="text/javascript" src="/path/to/scribble-p5.js"></script>
+    <script language="javascript" type="text/javascript" src="/path/to/p5.scribble.js"></script>
 
 ## Create an instance
     var scribble = new Scribble();
