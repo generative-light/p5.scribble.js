@@ -19,6 +19,10 @@ so much of the source code is taken from the handy library for processing,
 written by Jo Wood, giCentre, City University London based on an idea by Nikolaus Gradwohl.
 https://github.com/gicentre/handy
 
+# Examples
+In the examples directory you can find examples to see p5.scribble.js in action.
+I will add more examples in the future. If you create some nice stuff with p5.scribble,js, which could fit in the example directory, let me know or send a PR.
+
 # How to use
 ## Include the file
 
