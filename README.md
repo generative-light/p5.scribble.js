@@ -2,6 +2,7 @@
 Draw 2D primitives in a sketchy look in http://p5js.org/.
 
 ![Example image](https://github.com/generative-light/scripple-p5.js/blob/master/scribble-p5.js.png)
+![Example image 2](https://github.com/generative-light/scripple-p5.js/blob/master/bargraph.png)
 
 With p5.scribble.js you can draw
 - lines
@@ -20,7 +21,8 @@ written by Jo Wood, giCentre, City University London based on an idea by Nikolau
 https://github.com/gicentre/handy
 
 # Examples
-In the examples directory you can find examples to see p5.scribble.js in action.
+In the examples directory you can find examples to see p5.scribble.js in action:
+- Bar graph example (see image on top)
 I will add more examples in the future. If you create some nice stuff with p5.scribble,js, which could fit in the example directory, let me know or send a PR.
 
 # How to use
