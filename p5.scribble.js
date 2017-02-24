@@ -5,12 +5,16 @@ Author: Janneck Wullschleger in 07/2016
 Web: http://itsjw.de
 Mail: jw@itsjw.de
 
+Updated: 24.02.2017 to use with a reference to the p5 instance.
+Just put it in as param to the constructor.
+
 Much of the source code is taken from the handy library for processing,
 written by Jo Wood, giCentre, City University London based on an idea by Nikolaus Gradwohl.
 The handy library is licensed under the GNU Lesser General Public License: http://www.gnu.org/licenses/.
 */
 
-function Scribble() {
+function Scribble(p) {
+  this.sketch = p || window;
   this.bowing = 1;
   this.roughness = 1;
   this.maxOffset = 2;
@@ -18,30 +22,30 @@ function Scribble() {
   this.ellipseInc = (Math.PI*2)/this.numEllipseSteps;
 
   this.getOffset = function( minVal, maxVal ) {
-    return this.roughness*(random()*(maxVal-minVal)+minVal);
+    return this.roughness*(this.sketch.random()*(maxVal-minVal)+minVal);
   }
 
   this.buildEllipse = function( cx, cy, rx, ry, offset, overlap ) {
     var radialOffset = this.getOffset( -0.5, 0.5 )-Math.PI/2;
 
-    beginShape();
-    curveVertex( this.getOffset( -offset, offset )+cx+0.9*rx*Math.cos( radialOffset-this.ellipseInc ),
+    this.sketch.beginShape();
+    this.sketch.curveVertex( this.getOffset( -offset, offset )+cx+0.9*rx*Math.cos( radialOffset-this.ellipseInc ),
         this.getOffset( -offset, offset )+cy+0.9*ry*Math.sin( radialOffset-this.ellipseInc ) );
 
     for ( var theta = radialOffset; theta < Math.PI*2+radialOffset-0.01; theta+=this.ellipseInc ) {
-      curveVertex( this.getOffset( -offset, offset )+cx+rx*Math.cos( theta ),
+      this.sketch.curveVertex( this.getOffset( -offset, offset )+cx+rx*Math.cos( theta ),
           this.getOffset( -offset, offset )+cy+ry*Math.sin( theta ) );
     }
 
-    curveVertex( this.getOffset( -offset, offset )+cx+rx*Math.cos( radialOffset+Math.PI*2+overlap*0.5 ),
+    cthis.sketch.urveVertex( this.getOffset( -offset, offset )+cx+rx*Math.cos( radialOffset+Math.PI*2+overlap*0.5 ),
         this.getOffset( -offset, offset )+cy+ry*Math.sin( radialOffset+Math.PI*2+overlap*0.5 ) );
 
-    curveVertex( this.getOffset( -offset, offset )+cx+0.98*rx*Math.cos( radialOffset+overlap ),
+    this.sketch.curveVertex( this.getOffset( -offset, offset )+cx+0.98*rx*Math.cos( radialOffset+overlap ),
         this.getOffset( -offset, offset )+cy+0.98*ry*Math.sin( radialOffset+overlap ) );
 
-    curveVertex( this.getOffset( -offset, offset )+cx+0.9*rx*Math.cos( radialOffset+overlap*0.5 ),
+    this.sketch.curveVertex( this.getOffset( -offset, offset )+cx+0.9*rx*Math.cos( radialOffset+overlap*0.5 ),
         this.getOffset( -offset, offset )+cy+0.9*ry*Math.sin( radialOffset+overlap*0.5 ) );
-    endShape();
+    this.sketch.endShape();
   }
 
   this.getIntersectingLines = function( lineCoords, xCoords, yCoords ) {
@@ -67,40 +71,40 @@ function Scribble() {
     }
 
     var halfOffset = offset/2;
-    var divergePoint = 0.2 + random()*0.2;
+    var divergePoint = 0.2 + this.sketch.random()*0.2;
     var midDispX = this.bowing*this.maxOffset*(y2-y1)/200;
     var midDispY = this.bowing*this.maxOffset*(x1-x2)/200;
     midDispX = this.getOffset( -midDispX, midDispX );
     midDispY = this.getOffset( -midDispY, midDispY );
 
-    noFill();
+    this.sketch.noFill();
 
-    beginShape();
-    vertex(     x1 + this.getOffset( -offset, offset ), y1 + this.getOffset( -offset, offset ) );
-    curveVertex(x1 + this.getOffset( -offset, offset ), y1 + this.getOffset( -offset, offset ) );
-    curveVertex(midDispX+x1+(x2 -x1)*divergePoint + this.getOffset( -offset, offset ), midDispY+y1 + (y2-y1)*divergePoint + this.getOffset( -offset, offset ) );
-    curveVertex(midDispX+x1+2*(x2-x1)*divergePoint + this.getOffset( -offset, offset ), midDispY+y1+ 2*(y2-y1)*divergePoint + this.getOffset( -offset,offset ) );
-    curveVertex(x2 + this.getOffset( -offset, offset ), y2 + this.getOffset( -offset, offset ) );
-    vertex(     x2 + this.getOffset( -offset, offset ), y2 + this.getOffset( -offset, offset ) );
-    endShape();
+    this.sketch.beginShape();
+    this.sketch.vertex(     x1 + this.getOffset( -offset, offset ), y1 + this.getOffset( -offset, offset ) );
+    this.sketch.curveVertex(x1 + this.getOffset( -offset, offset ), y1 + this.getOffset( -offset, offset ) );
+    this.sketch.curveVertex(midDispX+x1+(x2 -x1)*divergePoint + this.getOffset( -offset, offset ), midDispY+y1 + (y2-y1)*divergePoint + this.getOffset( -offset, offset ) );
+    this.sketch.curveVertex(midDispX+x1+2*(x2-x1)*divergePoint + this.getOffset( -offset, offset ), midDispY+y1+ 2*(y2-y1)*divergePoint + this.getOffset( -offset,offset ) );
+    this.sketch.curveVertex(x2 + this.getOffset( -offset, offset ), y2 + this.getOffset( -offset, offset ) );
+    this.sketch.vertex(     x2 + this.getOffset( -offset, offset ), y2 + this.getOffset( -offset, offset ) );
+    this.sketch.endShape();
 
-    beginShape();
-    vertex(     x1 + this.getOffset( -halfOffset, halfOffset ), y1 + this.getOffset( -halfOffset, halfOffset ) );
-    curveVertex(x1 + this.getOffset( -halfOffset, halfOffset ), y1 + this.getOffset( -halfOffset, halfOffset ) );
-    curveVertex(midDispX+x1+(x2 -x1)*divergePoint + this.getOffset( -halfOffset, halfOffset ), midDispY+y1 + (y2-y1)*divergePoint + this.getOffset( -halfOffset, halfOffset ) );
-    curveVertex(midDispX+x1+2*(x2-x1)*divergePoint + this.getOffset( -halfOffset, halfOffset ), midDispY+y1+ 2*(y2-y1)*divergePoint + this.getOffset( -halfOffset, halfOffset ) );
-    curveVertex(x2 + this.getOffset( -halfOffset, halfOffset ), y2 + this.getOffset( -halfOffset, halfOffset ) );
-    vertex(     x2 + this.getOffset( -halfOffset, halfOffset ), y2 + this.getOffset( -halfOffset, halfOffset ) );
-    endShape();
+    this.sketch.beginShape();
+    this.sketch.vertex(     x1 + this.getOffset( -halfOffset, halfOffset ), y1 + this.getOffset( -halfOffset, halfOffset ) );
+    this.sketch.curveVertex(x1 + this.getOffset( -halfOffset, halfOffset ), y1 + this.getOffset( -halfOffset, halfOffset ) );
+    this.sketch.curveVertex(midDispX+x1+(x2 -x1)*divergePoint + this.getOffset( -halfOffset, halfOffset ), midDispY+y1 + (y2-y1)*divergePoint + this.getOffset( -halfOffset, halfOffset ) );
+    this.sketch.curveVertex(midDispX+x1+2*(x2-x1)*divergePoint + this.getOffset( -halfOffset, halfOffset ), midDispY+y1+ 2*(y2-y1)*divergePoint + this.getOffset( -halfOffset, halfOffset ) );
+    this.sketch.curveVertex(x2 + this.getOffset( -halfOffset, halfOffset ), y2 + this.getOffset( -halfOffset, halfOffset ) );
+    this.sketch.vertex(     x2 + this.getOffset( -halfOffset, halfOffset ), y2 + this.getOffset( -halfOffset, halfOffset ) );
+    this.sketch.endShape();
   }
 
   this.scribbleCurve = function( x1, y1, x2, y2, x3, y3, x4, y4 ) {
-    bezier(  x1+this.getOffset( -2, 2 ), y1+this.getOffset( -2, 2 ),
+    this.sketch.bezier(  x1+this.getOffset( -2, 2 ), y1+this.getOffset( -2, 2 ),
              x3+this.getOffset( -4, 4 ), y3+this.getOffset( -3, 3 ),
              x4+this.getOffset( -3, 3 ), y4+this.getOffset( -3, 3 ),
              x2+this.getOffset( -1, 1 ), y2+this.getOffset( -1, 1 ) );
 
-    bezier(  x1+this.getOffset( -2, 2 ), y1+this.getOffset( -2, 2 ),
+    this.sketch.bezier(  x1+this.getOffset( -2, 2 ), y1+this.getOffset( -2, 2 ),
              x3+this.getOffset( -3, 3 ), y3+this.getOffset( -3, 3 ),
              x4+this.getOffset( -3, 3 ), y4+this.getOffset( -4, 4 ),
              x2+this.getOffset( -2, 2 ), y2+this.getOffset( -2, 2 ) );
@@ -161,7 +165,7 @@ function Scribble() {
         return;
       }
 
-    var hachureAngle = radians( angle%180 );
+    var hachureAngle = this.sketch.radians( angle%180 );
     var cosAngle = Math.cos( hachureAngle );
     var sinAngle = Math.sin( hachureAngle );
     var tanAngle = Math.tan( hachureAngle );
