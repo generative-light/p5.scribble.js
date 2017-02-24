@@ -39,7 +39,11 @@ If you create some nice stuff with p5.scribble,js, which could fit in the exampl
     <script language="javascript" type="text/javascript" src="/path/to/p5.scribble.js"></script>
 
 ## Create an instance
-    var scribble = new Scribble();
+    var scribble = new Scribble();              // global mode
+    var scribble = new Scripple( p5Instance );  // instance mode
+    
+You can use p5js and p5.scribble.js in global or instance mode. 
+Just put in the p5 instance to the constructur for instance mode or let it empty for global mode.
 
 ## Lines
 
