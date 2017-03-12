@@ -37,7 +37,7 @@ function Scribble(p) {
           this.getOffset( -offset, offset )+cy+ry*Math.sin( theta ) );
     }
 
-    cthis.sketch.urveVertex( this.getOffset( -offset, offset )+cx+rx*Math.cos( radialOffset+Math.PI*2+overlap*0.5 ),
+    this.sketch.curveVertex( this.getOffset( -offset, offset )+cx+rx*Math.cos( radialOffset+Math.PI*2+overlap*0.5 ),
         this.getOffset( -offset, offset )+cy+ry*Math.sin( radialOffset+Math.PI*2+overlap*0.5 ) );
 
     this.sketch.curveVertex( this.getOffset( -offset, offset )+cx+0.98*rx*Math.cos( radialOffset+overlap ),
