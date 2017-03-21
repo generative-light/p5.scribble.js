@@ -37,7 +37,7 @@ function Scribble(p) {
           this.getOffset( -offset, offset )+cy+ry*Math.sin( theta ) );
     }
 
-    cthis.sketch.urveVertex( this.getOffset( -offset, offset )+cx+rx*Math.cos( radialOffset+Math.PI*2+overlap*0.5 ),
+    this.sketch.curveVertex( this.getOffset( -offset, offset )+cx+rx*Math.cos( radialOffset+Math.PI*2+overlap*0.5 ),
         this.getOffset( -offset, offset )+cy+ry*Math.sin( radialOffset+Math.PI*2+overlap*0.5 ) );
 
     this.sketch.curveVertex( this.getOffset( -offset, offset )+cx+0.98*rx*Math.cos( radialOffset+overlap ),
@@ -363,7 +363,7 @@ function Segment( _x1, _y1, _x2, _y2 ) {
       xi = otherSegment.getPx1();
       yi = grad1*xi+int1;
 
-      if (((otherSegment.getPy1()-yi)*(yi-otherSegment.getPy2()) < -0.00001) || ((y1-yi)*(yi-y2) < -000001)) {
+      if (((otherSegment.getPy1()-yi)*(yi-otherSegment.getPy2()) < -0.00001) || ((y1-yi)*(yi-y2) < -0.00001)) {
         return Relation.SEPARATE;
       }
 
