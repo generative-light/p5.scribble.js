@@ -40,7 +40,7 @@ If you create some nice stuff with p5.scribble,js, which could fit in the exampl
 
 ## Create an instance
     var scribble = new Scribble();              // global mode
-    var scribble = new Scripple( p5Instance );  // instance mode
+    var scribble = new Scribble( p5Instance );  // instance mode
     
 You can use p5js and p5.scribble.js in global or instance mode. 
 Just put in the p5 instance to the constructur for instance mode or let it empty for global mode.
@@ -89,9 +89,9 @@ To change the look you can edit the following attributes
     scribble.maxOffset = yourValue;       // coordinates will get an offset, here you define the max offset
     scribble.numEllipseSteps = yourValue; // defines how much curves will be used to draw an ellipse
 
-This lib works much on ramdom so if you want that your drawings look the same every render step, you should set a seed.
+This lib works much on random so if you want that your drawings look the same every render step, you should set a seed.
 
-    ramdomSeed( yourSeed );
+    randomSeed( yourSeed );
 
 ## Color and Weight  
 Colors and weights are defined like normal in p5.js.
